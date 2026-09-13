@@ -75,84 +75,166 @@ footer{text-align:center;background:#02070d;color:#71869a;padding:16px;font-size
 <footer>© 2026 Y2R STORE — More Than a Store… A Smart Choice</footer>
 
 <script>
-/* عداد 8 ساعات يتجدد تلقائياً */
-const CYCLE=8*60*60*1000,KEY="y2r_compact_timer";
-let start=localStorage.getItem(KEY);
-if(!start||Date.now()-Number(start)>=CYCLE){start=String(Date.now());localStorage.setItem(KEY,start);}
-function tick(){let e=Date.now()-Number(start);if(e>=CYCLE){start=String(Date.now());localStorage.setItem(KEY,start);e=0}
-let t=Math.floor((CYCLE-e)/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;
-document.getElementById("h").textContent=String(h).padStart(2,"0");document.getElementById("m").textContent=String(m).padStart(2,"0");document.getElementById("s").textContent=String(s).padStart(2,"0")}
-setInterval(tick,1000);tick();
+/* =========================
+   Y2R STORE - MAIN SCRIPT
+   ========================= */
 
-/* اختيار المنتج */
-let selectedProduct="",selectedPrice="";
-document.querySelectorAll(".order-btn").forEach(b=>b.onclick=()=>{
- selectedProduct=b.dataset.product;selectedPrice=b.dataset.price;
- document.getElementById("selected").textContent=selectedProduct+" — "+selectedPrice+" جنيه";
- document.getElementById("order").scrollIntoView({behavior:"smooth",block:"center"});
+/* عداد 8 ساعات يتجدد تلقائياً */
+const CYCLE = 8 * 60 * 60 * 1000;
+const KEY = "y2r_compact_timer";
+
+let start = localStorage.getItem(KEY);
+
+if (!start || Date.now() - Number(start) >= CYCLE) {
+  start = String(Date.now());
+  localStorage.setItem(KEY, start);
+}
+
+function tick() {
+  let elapsed = Date.now() - Number(start);
+
+  if (elapsed >= CYCLE) {
+    start = String(Date.now());
+    localStorage.setItem(KEY, start);
+    elapsed = 0;
+  }
+
+  const totalSeconds = Math.floor((CYCLE - elapsed) / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  document.getElementById("h").textContent = String(hours).padStart(2, "0");
+  document.getElementById("m").textContent = String(minutes).padStart(2, "0");
+  document.getElementById("s").textContent = String(seconds).padStart(2, "0");
+}
+
+tick();
+setInterval(tick, 1000);
+
+
+/* =========================
+   اختيار المنتج
+   ========================= */
+
+let selectedProduct = "";
+let selectedPrice = "";
+
+document.querySelectorAll(".order-btn").forEach(function (button) {
+  button.addEventListener("click", function () {
+    selectedProduct = button.dataset.product || "";
+    selectedPrice = button.dataset.price || "";
+
+    const selectedBox = document.getElementById("selected");
+
+    selectedBox.textContent =
+      selectedProduct + " — " + selectedPrice + " جنيه";
+
+    document.getElementById("order").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  });
 });
 
-<script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
 
-const form = document.querySelector("form");
+/* =========================
+   Google Apps Script
+   ========================= */
 
-if (form) {
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
 
-    const status = document.getElementById("status");
-    const btn = form.querySelector(".submit");
+const form = document.getElementById("form");
+const statusBox = document.getElementById("status");
+const submitButton = form.querySelector(".submit");
 
-    if (!selectedProduct) {
-      status.className = "status err";
-      status.textContent = "من فضلك اختر المنتج أولاً";
-      return;
-    }
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
 
-    btn.disabled = true;
-    btn.textContent = "جاري إرسال الطلب...";
+  if (!selectedProduct) {
+    statusBox.className = "status err";
+    statusBox.textContent = "من فضلك اختر المنتج أولاً.";
+    return;
+  }
 
-    const d = Object.fromEntries(new FormData(form).entries());
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
 
-    d.product = selectedProduct;
-    d.price = selectedPrice;
-    d.page = window.location.href;
-    d.timestamp = new Date().toISOString();
+  submitButton.disabled = true;
+  submitButton.textContent = "جاري إرسال الطلب...";
 
-    const params = new URLSearchParams(d);
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
 
-    // إرسال الطلب إلى Google Sheets
-    const img = new Image();
+  const urlParams = new URLSearchParams(window.location.search);
 
-    img.onload = function() {
-      showSuccess();
-    };
+  data.product = selectedProduct;
+  data.price = selectedPrice;
+  data.page = window.location.href;
+  data.timestamp = new Date().toISOString();
 
-    img.onerror = function() {
-      // حتى لو المتصفح منع قراءة الرد، الطلب نفسه يكون اتبعت
-      showSuccess();
-    };
+  data.utm_source = urlParams.get("utm_source") || "";
+  data.utm_medium = urlParams.get("utm_medium") || "";
+  data.utm_campaign = urlParams.get("utm_campaign") || "";
+  data.utm_content = urlParams.get("utm_content") || "";
 
-    img.src = GOOGLE_SCRIPT_URL + "?" + params.toString();
+  /*
+    استخدام GET هنا بدلاً من POST لأن Google Apps Script
+    يستقبل doGet بشكل مباشر من GitHub Pages بدون مشكلة CORS.
+  */
+  const requestParams = new URLSearchParams(data);
+  const requestUrl = GOOGLE_SCRIPT_URL + "?" + requestParams.toString();
 
-    // تأكيد النجاح بعد الإرسال
-    setTimeout(function() {
-      showSuccess();
-    }, 1200);
+  let sent = false;
 
-    function showSuccess() {
-      status.className = "status ok";
-      status.textContent = "تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
+  function showSuccess() {
+    if (sent) return;
+    sent = true;
 
-      form.reset();
+    statusBox.className = "status ok";
+    statusBox.textContent =
+      "تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
 
-      btn.disabled = false;
-      btn.textContent = "تأكيد الطلب الآن";
-    }
-  });
-}
+    form.reset();
+
+    submitButton.disabled = false;
+    submitButton.textContent = "تأكيد الطلب الآن";
+  }
+
+  function showError() {
+    if (sent) return;
+    sent = true;
+
+    statusBox.className = "status err";
+    statusBox.textContent =
+      "تعذر إرسال الطلب. حاول مرة أخرى.";
+
+    submitButton.disabled = false;
+    submitButton.textContent = "تأكيد الطلب الآن";
+  }
+
+  /*
+    Image beacon:
+    المتصفح يرسل GET إلى Google Apps Script حتى لو كانت الصفحة
+    لا تستطيع قراءة الرد بسبب سياسة CORS.
+  */
+  const beacon = new Image();
+
+  beacon.onload = showSuccess;
+  beacon.onerror = showSuccess;
+
+  beacon.src = requestUrl;
+
+  /*
+    احتياطي في حالة المتصفح لم يطلق onload/onerror.
+  */
+  setTimeout(function () {
+    if (!sent) showSuccess();
+  }, 1800);
+});
 </script>
-
 </body>
 </html>
