@@ -102,8 +102,8 @@ const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brt
  const p=new URLSearchParams(location.search),d=Object.fromEntries(new FormData(e.target).entries());
  Object.assign(d,{product:selectedProduct,price:selectedPrice,page:location.href,timestamp:new Date().toISOString(),
  utm_source:p.get("utm_source")||"",utm_medium:p.get("utm_medium")||"",utm_campaign:p.get("utm_campaign")||"",utm_content:p.get("utm_content")||""});
-try{await fetch(GOOGLE_SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(d)});
-    status.className="status ok";status.textContent="تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";e.target.reset();
+try{const params=new URLSearchParams(d);await fetch(GOOGLE_SCRIPT_URL+"?"+params.toString(),{method:"GET",mode:"no-cors"});}
+ status.className="status ok";status.textContent="تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";e.target.reset();
  }catch(x){status.className="status err";status.textContent="حدث خطأ، حاول مرة أخرى."}
  btn.disabled=false;btn.textContent="تأكيد الطلب الآن";
 };
