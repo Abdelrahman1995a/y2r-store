@@ -94,7 +94,7 @@ document.querySelectorAll(".order-btn").forEach(b=>b.onclick=()=>{
 
 /* ضع رابط Google Apps Script هنا */
 const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
-document.getElementById("form").onsubmit=async e=>{
+ document.getElementById("form").onsubmit=async e=>{
  e.preventDefault();const status=document.getElementById("status"),btn=document.querySelector(".submit");
  if(!selectedProduct){status.className="status err";status.textContent="اختار المنتج الأول.";return}
  if(GOOGLE_SCRIPT_URL.includes("YOUR_")){status.className="status err";status.textContent="لم يتم ربط Google Sheets بعد.";return}
