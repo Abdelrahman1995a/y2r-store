@@ -92,46 +92,67 @@ document.querySelectorAll(".order-btn").forEach(b=>b.onclick=()=>{
  document.getElementById("order").scrollIntoView({behavior:"smooth",block:"center"});
 });
 
-/* ضع رابط Google Apps Script هنا */
-const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
-document.getElementById("form").onsubmit = function(e) {
-  const status = document.getElementById("status");
-  const btn = document.querySelector(".submit");
+<script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
 
-  if (!selectedProduct) {
-    status.className = "status err";
-    status.textContent = "من فضلك اختر المنتج أولاً";
-    return;
-  }
+const form = document.querySelector("form");
 
-  btn.disabled = true;
-  btn.textContent = "جاري إرسال الطلب...";
+if (form) {
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-  const d = Object.fromEntries(new FormData(e.target).entries());
+    const status = document.getElementById("status");
+    const btn = form.querySelector(".submit");
 
-  d.product = selectedProduct;
-  d.price = selectedPrice;
-  d.page = location.href;
-  d.timestamp = new Date().toISOString();
+    if (!selectedProduct) {
+      status.className = "status err";
+      status.textContent = "من فضلك اختر المنتج أولاً";
+      return;
+    }
 
-  const params = new URLSearchParams(d);
+    btn.disabled = true;
+    btn.textContent = "جاري إرسال الطلب...";
 
-  // إرسال الطلب إلى Google Apps Script
-  const img = new Image();
+    const d = Object.fromEntries(new FormData(form).entries());
 
-  img.src = GOOGLE_SCRIPT_URL + "?" + params.toString();
+    d.product = selectedProduct;
+    d.price = selectedPrice;
+    d.page = window.location.href;
+    d.timestamp = new Date().toISOString();
 
-  // رسالة نجاح
-  setTimeout(function() {
-    status.className = "status ok";
-    status.textContent = "تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
-    e.target.reset();
+    const params = new URLSearchParams(d);
 
-    btn.disabled = false;
-    btn.textContent = "تأكيد الطلب الآن";
-  }, 1200);
-};
-};
+    // إرسال الطلب إلى Google Sheets
+    const img = new Image();
+
+    img.onload = function() {
+      showSuccess();
+    };
+
+    img.onerror = function() {
+      // حتى لو المتصفح منع قراءة الرد، الطلب نفسه يكون اتبعت
+      showSuccess();
+    };
+
+    img.src = GOOGLE_SCRIPT_URL + "?" + params.toString();
+
+    // تأكيد النجاح بعد الإرسال
+    setTimeout(function() {
+      showSuccess();
+    }, 1200);
+
+    function showSuccess() {
+      status.className = "status ok";
+      status.textContent = "تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
+
+      form.reset();
+
+      btn.disabled = false;
+      btn.textContent = "تأكيد الطلب الآن";
+    }
+  });
+}
 </script>
+
 </body>
 </html>
