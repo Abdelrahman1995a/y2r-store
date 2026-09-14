@@ -34,7 +34,7 @@ header{height:62px;border-bottom:1px solid #173653}.nav{height:100%;display:flex
 .ok{color:#15803d}.err{color:#b91c1c}.note{text-align:center;color:#64748b;font-size:11px;margin-top:5px}
 .trust{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;color:#8da5b8;font-size:12px;margin:8px 0 22px}
 footer{text-align:center;background:#02070d;color:#71869a;padding:16px;font-size:11px}
-#y2rSubmitFrame{display:none;width:1px;height:1px;border:0;position:absolute;left:-9999px}
+#y2rSubmitFrame{width:1px;height:1px;border:0;position:fixed;left:-100px;bottom:-100px;opacity:0;pointer-events:none}
 @media(max-width:900px){.products{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.products{gap:9px}.pic img{height:145px}.body{padding:9px}.body h2{font-size:15px}.hook{font-size:12px}.desc{font-size:11px;min-height:34px}.price{font-size:21px}.order-btn{padding:10px 5px;font-size:13px}.tag{display:none}.form-grid{grid-template-columns:1fr 1fr}.hero{padding-top:18px}.hero p{font-size:13px}.unit{min-width:57px}.num{font-size:20px}}
 </style>
@@ -155,22 +155,42 @@ return {utm_source:p.get("utm_source")||"",utm_medium:p.get("utm_medium")||"",ut
 /* إرسال GET مباشر باستخدام HTML form native.
    لا fetch، لا POST، لا CORS. */
 function nativeSend(order){
+return new Promise(function(resolve){
 const f=document.createElement("form");
 f.method="GET";
 f.action=GOOGLE_SCRIPT_URL;
 f.target="y2rSubmitFrame";
-f.style.display="none";
+f.acceptCharset="UTF-8";
+f.style.position="fixed";
+f.style.left="-9999px";
+f.style.top="-9999px";
+f.style.width="1px";
+f.style.height="1px";
+f.style.opacity="0";
 
 const payload=Object.assign({},order,{_request:id()});
 Object.keys(payload).forEach(function(k){
 const i=document.createElement("input");
-i.type="hidden";i.name=k;i.value=payload[k]==null?"":String(payload[k]);
+i.type="hidden";
+i.name=k;
+i.value=payload[k]==null?"":String(payload[k]);
 f.appendChild(i);
 });
-document.body.appendChild(f);
-f.submit();
 
-setTimeout(function(){try{f.remove()}catch(e){}},5000);
+document.body.appendChild(f);
+
+try{
+f.submit();
+/* submit() means the browser accepted the GET navigation. */
+setTimeout(function(){
+try{f.remove()}catch(e){}
+resolve(true);
+},1200);
+}catch(err){
+try{f.remove()}catch(e){}
+resolve(false);
+}
+});
 }
 
 /* إعادة إرسال الطلبات المحفوظة واحدًا واحدًا */
@@ -178,15 +198,24 @@ function syncBackup(){
 if(!navigator.onLine)return;
 const q=readQueue();
 if(!q.length)return;
-let item=q[0];
-nativeSend(item);
+
+const item=q[0];
+
+nativeSend(item).then(function(started){
+if(started){
 setTimeout(function(){
 const now=readQueue();
-if(now.length && now[0].order_id===item.order_id){
-now.shift();saveQueue(now);
+const index=now.findIndex(function(x){return x.order_id===item.order_id;});
+if(index!==-1){
+now.splice(index,1);
+saveQueue(now);
 }
 setTimeout(syncBackup,1200);
-},2200);
+},3500);
+}else{
+setTimeout(syncBackup,5000);
+}
+});
 }
 
 document.getElementById("orderForm").addEventListener("submit",function(e){
@@ -220,13 +249,20 @@ btn.disabled=true;btn.textContent="جاري تسجيل الطلب...";
 status.className="status";status.textContent="";
 
 if(navigator.onLine){
-nativeSend(order);
+nativeSend(order).then(function(started){
+if(!started){
+status.className="status err";
+status.textContent="تعذر إرسال الطلب الآن. تم حفظه وسيتم إعادة المحاولة.";
+return;
+}
 
-/* حذف أول طلب بعد إعطاء المتصفح وقتًا كافيًا لإطلاق GET */
+/* الطلب خرج من المتصفح. نحتفظ بنسخة قصيرة احتياطيًا ثم نحذفها بعد التأخير. */
 setTimeout(function(){
 const q=readQueue();
-if(q.length && q[0].order_id===order.order_id){
-q.shift();saveQueue(q);
+const index=q.findIndex(function(x){return x.order_id===order.order_id;});
+if(index!==-1){
+q.splice(index,1);
+saveQueue(q);
 }
 status.className="status ok";
 status.textContent="تم تسجيل طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
@@ -234,7 +270,8 @@ e.target.reset();selectedProduct="";selectedPrice="";
 document.getElementById("selected").textContent="اختار منتج من فوق أولاً";
 btn.disabled=false;btn.textContent="تأكيد الطلب الآن";
 syncBackup();
-},2500);
+},3500);
+});
 }else{
 status.className="status ok";
 status.textContent="تم حفظ الطلب على الجهاز 📦 وسيتم إرساله تلقائيًا عند عودة الإنترنت.";
