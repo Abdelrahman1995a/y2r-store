@@ -3,35 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Y2R STORE | اختار منتجك</title>
-<meta name="description" content="اختار منتجك من Y2R STORE واطلبه بسهولة.">
+<title>Y2R STORE | اطلب الآن</title>
+<meta name="description" content="Y2R STORE - اطلب منتجاتك بسهولة من أي جهاز.">
 <style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#050d18;color:#fff}
-.wrap{width:min(1180px,94%);margin:auto}
-.top{background:#e50914;text-align:center;padding:8px;font-weight:900;font-size:14px}
-header{height:62px;border-bottom:1px solid #173653}
-.nav{height:100%;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:26px;font-weight:1000}
-.logo span{color:#078cff}
-.tag{font-size:12px;color:#9eb2c2;letter-spacing:1.5px}
+.wrap{width:min(1180px,94%);margin:auto}.top{background:#e50914;text-align:center;padding:8px;font-weight:900;font-size:14px}
+header{height:62px;border-bottom:1px solid #173653}.nav{height:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:26px;font-weight:1000}.logo span{color:#078cff}.tag{font-size:12px;color:#9eb2c2;letter-spacing:1.5px}
 .hero{text-align:center;padding:24px 0 18px;background:radial-gradient(circle at 50% 0,#0d3150,#050d18 60%)}
-.hero h1{font-size:clamp(30px,4.5vw,52px);line-height:1.1;margin:5px 0}
-.hero h1 span{color:#00bfff}
-.hero p{margin:8px auto 14px;color:#b9c9d7;font-size:16px}
-.timer{display:flex;justify-content:center;gap:7px;direction:ltr}
+.hero h1{font-size:clamp(30px,4.5vw,52px);line-height:1.1;margin:5px 0}.hero h1 span{color:#00bfff}
+.hero p{margin:8px auto 14px;color:#b9c9d7;font-size:16px}.timer{display:flex;justify-content:center;gap:7px;direction:ltr}
 .unit{background:#07182a;border:1px solid #168ee0;border-radius:9px;padding:5px 10px;min-width:65px}
-.num{display:block;font-size:23px;font-weight:1000}
-.lab{font-size:8px;color:#8eacc3}
+.num{display:block;font-size:23px;font-weight:1000}.lab{font-size:8px;color:#8eacc3}
 .products{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0 22px}
 .card{background:#fff;color:#111827;border-radius:16px;overflow:hidden;border:2px solid #16496a;box-shadow:0 10px 28px #0007;display:flex;flex-direction:column}
-.pic{background:#edf3f7}
-.pic img{width:100%;height:210px;display:block;object-fit:cover;object-position:center}
-.body{padding:13px;display:flex;flex-direction:column;flex:1}
-.body h2{font-size:18px;line-height:1.3;margin:0 0 5px}
-.hook{font-size:14px;font-weight:900;color:#087ff5;margin-bottom:5px}
-.desc{font-size:12px;color:#64748b;line-height:1.55;min-height:38px}
+.pic{background:#edf3f7}.pic img{width:100%;height:210px;display:block;object-fit:cover;object-position:center}
+.body{padding:13px;display:flex;flex-direction:column;flex:1}.body h2{font-size:18px;line-height:1.3;margin:0 0 5px}
+.hook{font-size:14px;font-weight:900;color:#087ff5;margin-bottom:5px}.desc{font-size:12px;color:#64748b;line-height:1.55;min-height:38px}
 .price{font-size:25px;font-weight:1000;margin:8px 0;color:#111827}
 .order-btn{margin-top:auto;border:0;border-radius:10px;padding:12px;background:#087ff5;color:#fff;font-size:15px;font-weight:1000;cursor:pointer}
 .form-area{background:#fff;color:#111827;border-radius:18px;padding:20px;margin:0 0 25px}
@@ -41,105 +30,60 @@ header{height:62px;border-bottom:1px solid #173653}
 .field label{display:block;font-size:12px;font-weight:900;margin-bottom:4px}
 .field input,.field select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;font-size:14px}
 .submit{width:100%;padding:13px;margin-top:10px;border:0;border-radius:10px;background:#e50914;color:#fff;font-size:17px;font-weight:1000;cursor:pointer}
-.submit:disabled{opacity:.7;cursor:wait}
-.status{text-align:center;font-size:13px;font-weight:900;margin-top:7px}
-.ok{color:#15803d}
-.err{color:#b91c1c}
+.submit:disabled{opacity:.65;cursor:wait}.status{text-align:center;font-size:13px;font-weight:900;margin-top:8px}
+.ok{color:#15803d}.err{color:#b91c1c}.note{text-align:center;color:#64748b;font-size:11px;margin-top:5px}
 .trust{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;color:#8da5b8;font-size:12px;margin:8px 0 22px}
 footer{text-align:center;background:#02070d;color:#71869a;padding:16px;font-size:11px}
-#y2rSender{display:none;width:0;height:0;border:0;position:absolute}
-@media(max-width:900px){
-.products{grid-template-columns:repeat(2,1fr)}
-.form-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:560px){
-.products{gap:9px}
-.pic img{height:145px}
-.body{padding:9px}
-.body h2{font-size:15px}
-.hook{font-size:12px}
-.desc{font-size:11px;min-height:34px}
-.price{font-size:21px}
-.order-btn{padding:10px 5px;font-size:13px}
-.tag{display:none}
-.form-grid{grid-template-columns:1fr 1fr}
-.hero{padding-top:18px}
-.hero p{font-size:13px}
-.unit{min-width:57px}
-.num{font-size:20px}
-}
+#y2rSubmitFrame{display:none;width:1px;height:1px;border:0;position:absolute;left:-9999px}
+@media(max-width:900px){.products{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.products{gap:9px}.pic img{height:145px}.body{padding:9px}.body h2{font-size:15px}.hook{font-size:12px}.desc{font-size:11px;min-height:34px}.price{font-size:21px}.order-btn{padding:10px 5px;font-size:13px}.tag{display:none}.form-grid{grid-template-columns:1fr 1fr}.hero{padding-top:18px}.hero p{font-size:13px}.unit{min-width:57px}.num{font-size:20px}}
 </style>
 </head>
-
 <body>
+
 <div class="top">🔥 عروض Y2R STORE — اختار منتجك واطلبه دلوقتي</div>
 
-<header>
-<div class="wrap nav">
+<header><div class="wrap nav">
 <div class="logo">Y2R <span>STORE</span></div>
 <div class="tag">SMART PRODUCTS • BETTER LIFE</div>
-</div>
-</header>
+</div></header>
 
-<section class="hero">
-<div class="wrap">
+<section class="hero"><div class="wrap">
 <h1>كل احتياجاتك <span>في مكان واحد</span></h1>
-<p>اختار منتجك من العروض الحالية وسجل بياناتك — بدون خطوات معقدة.</p>
+<p>اختار منتجك وسجل بياناتك — والطلب بيتسجل مباشرة في نظام الطلبات.</p>
 <div class="timer">
 <div class="unit"><span class="num" id="h">08</span><span class="lab">HOURS</span></div>
 <div class="unit"><span class="num" id="m">00</span><span class="lab">MINUTES</span></div>
 <div class="unit"><span class="num" id="s">00</span><span class="lab">SECONDS</span></div>
 </div>
-</div>
-</section>
+</div></section>
 
 <main class="wrap">
-
 <section class="products">
 
-<article class="card">
-<div class="pic"><img src="samsung.png" alt="Samsung 45W Charger"></div>
-<div class="body">
-<div class="hook">⚡ شحن أسرع لحياة أسرع</div>
-<h2>Samsung 45W</h2>
-<div class="desc">شحن سريع + USB-C to USB-C + حماية وأمان.</div>
-<div class="price">500 جنيه</div>
+<article class="card"><div class="pic"><img src="samsung.png" alt="Samsung 45W Charger"></div><div class="body">
+<div class="hook">⚡ شحن أسرع لحياة أسرع</div><h2>Samsung 45W</h2>
+<div class="desc">شحن سريع + USB-C to USB-C + حماية وأمان.</div><div class="price">500 جنيه</div>
 <button type="button" class="order-btn" data-product="Samsung 45W Charger" data-price="500">اطلب الآن</button>
-</div>
-</article>
+</div></article>
 
-<article class="card">
-<div class="pic"><img src="powerbank.png" alt="JOYROOM 20000mAh"></div>
-<div class="body">
-<div class="hook">🔋 طاقة تدوم أكتر</div>
-<h2>JOYROOM 20,000mAh</h2>
-<div class="desc">22.5W شحن سريع + شاشة رقمية + 3 منافذ.</div>
-<div class="price">999 جنيه</div>
+<article class="card"><div class="pic"><img src="powerbank.png" alt="JOYROOM 20000mAh"></div><div class="body">
+<div class="hook">🔋 طاقة تدوم أكتر</div><h2>JOYROOM 20,000mAh</h2>
+<div class="desc">22.5W شحن سريع + شاشة رقمية + 3 منافذ.</div><div class="price">999 جنيه</div>
 <button type="button" class="order-btn" data-product="JOYROOM Power Bank 20000mAh" data-price="999">اطلب الآن</button>
-</div>
-</article>
+</div></article>
 
-<article class="card">
-<div class="pic"><img src="pro4.png" alt="Y2R PRO 4 Earbuds"></div>
-<div class="body">
-<div class="hook">🎧 اسمعها بشكل مختلف</div>
-<h2>Y2R PRO 4</h2>
-<div class="desc">اتصال سريع + بطارية قوية + مكالمات واضحة.</div>
-<div class="price">700 جنيه</div>
+<article class="card"><div class="pic"><img src="pro4.png" alt="Y2R PRO 4 Earbuds"></div><div class="body">
+<div class="hook">🎧 اسمعها بشكل مختلف</div><h2>Y2R PRO 4</h2>
+<div class="desc">اتصال سريع + بطارية قوية + مكالمات واضحة.</div><div class="price">700 جنيه</div>
 <button type="button" class="order-btn" data-product="Y2R PRO 4 Wireless Earbuds" data-price="700">اطلب الآن</button>
-</div>
-</article>
+</div></article>
 
-<article class="card">
-<div class="pic"><img src="car-charger.png" alt="Y2R 120W Car Charger"></div>
-<div class="body">
-<div class="hook">🚗 شاحن سيارتك في 4</div>
-<h2>Y2R 120W 4-in-1</h2>
-<div class="desc">120W PD + QC 3.0 + شحن 4 أجهزة معًا.</div>
-<div class="price">700 جنيه</div>
+<article class="card"><div class="pic"><img src="car-charger.png" alt="Y2R 120W Car Charger"></div><div class="body">
+<div class="hook">🚗 شاحن سيارتك في 4</div><h2>Y2R 120W 4-in-1</h2>
+<div class="desc">120W PD + QC 3.0 + شحن 4 أجهزة معًا.</div><div class="price">700 جنيه</div>
 <button type="button" class="order-btn" data-product="Y2R 4-in-1 Car Charger 120W" data-price="700">اطلب الآن</button>
-</div>
-</article>
+</div></article>
 
 </section>
 
@@ -147,300 +91,161 @@ footer{text-align:center;background:#02070d;color:#71869a;padding:16px;font-size
 <h2>🛒 أكمل طلبك</h2>
 <div class="selected" id="selected">اختار منتج من فوق أولاً</div>
 
-<form id="form">
+<form id="orderForm" autocomplete="on">
 <div class="form-grid">
-
-<div class="field">
-<label>الاسم *</label>
-<input name="name" required placeholder="اسمك بالكامل">
-</div>
-
-<div class="field">
-<label>الموبايل *</label>
-<input name="phone" required inputmode="tel" placeholder="01xxxxxxxxx">
-</div>
-
-<div class="field">
-<label>المحافظة *</label>
+<div class="field"><label>الاسم *</label><input name="name" required autocomplete="name" placeholder="اسمك بالكامل"></div>
+<div class="field"><label>الموبايل *</label><input name="phone" required inputmode="tel" autocomplete="tel" placeholder="01xxxxxxxxx"></div>
+<div class="field"><label>المحافظة *</label>
 <select name="governorate" required>
 <option value="">اختر</option>
-<option>القاهرة</option><option>الجيزة</option><option>القليوبية</option>
-<option>الإسكندرية</option><option>الدقهلية</option><option>الشرقية</option>
-<option>الغربية</option><option>المنوفية</option><option>البحيرة</option>
-<option>كفر الشيخ</option><option>دمياط</option><option>بورسعيد</option>
-<option>الإسماعيلية</option><option>السويس</option><option>الفيوم</option>
-<option>بني سويف</option><option>المنيا</option><option>أسيوط</option>
-<option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option>
-<option>مطروح</option><option>الوادي الجديد</option><option>شمال سيناء</option>
-<option>جنوب سيناء</option><option>البحر الأحمر</option>
-</select>
+<option>القاهرة</option><option>الجيزة</option><option>القليوبية</option><option>الإسكندرية</option><option>الدقهلية</option><option>الشرقية</option><option>الغربية</option><option>المنوفية</option><option>البحيرة</option><option>كفر الشيخ</option><option>دمياط</option><option>بورسعيد</option><option>الإسماعيلية</option><option>السويس</option><option>الفيوم</option><option>بني سويف</option><option>المنيا</option><option>أسيوط</option><option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option><option>مطروح</option><option>الوادي الجديد</option><option>شمال سيناء</option><option>جنوب سيناء</option><option>البحر الأحمر</option>
+</select></div>
+<div class="field"><label>الكمية</label><select name="quantity"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
 </div>
-
-<div class="field">
-<label>الكمية</label>
-<select name="quantity">
-<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-</select>
-</div>
-
-</div>
-
-<div class="field" style="margin-top:9px">
-<label>العنوان بالتفصيل *</label>
-<input name="address" required placeholder="المنطقة، الشارع، رقم العقار">
-</div>
-
-<button type="submit" class="submit">تأكيد الطلب الآن</button>
+<div class="field" style="margin-top:9px"><label>العنوان بالتفصيل *</label><input name="address" required autocomplete="street-address" placeholder="المنطقة، الشارع، رقم العقار"></div>
+<button type="submit" class="submit" id="submitBtn">تأكيد الطلب الآن</button>
 <div class="status" id="status"></div>
+<div class="note">يتم إرسال الطلب مباشرة إلى نظام الطلبات.</div>
 </form>
 </section>
 
-<div class="trust">
-<span>🛡️ منتجات أصلية</span>
-<span>🚚 توصيل لجميع المحافظات</span>
-<span>📞 تأكيد الطلب</span>
-<span>🎧 دعم بعد البيع</span>
-</div>
-
+<div class="trust"><span>🛡️ منتجات أصلية</span><span>🚚 توصيل لجميع المحافظات</span><span>📞 تأكيد الطلب</span><span>🎧 دعم بعد البيع</span></div>
 </main>
 
 <footer>© 2026 Y2R STORE — More Than a Store… A Smart Choice</footer>
 
-<!-- قناة إرسال GET أصلية من المتصفح بدون fetch وبدون CORS -->
-<iframe name="y2rSender" id="y2rSender" title="order sender"></iframe>
+<iframe name="y2rSubmitFrame" id="y2rSubmitFrame" title="order submission"></iframe>
 
 <script>
-/* =========================
-   Y2R STORE - STABLE VERSION
-   Google Apps Script GET
-   لا تستخدم fetch ولا POST
-   ========================= */
+const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
+const QUEUE_KEY="y2r_orders_backup_v4";
+const CYCLE=8*60*60*1000;
 
-const GOOGLE_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
-
-const QUEUE_KEY = "y2r_pending_orders_v3";
-const CYCLE = 8 * 60 * 60 * 1000;
-
-/* عداد 8 ساعات */
-let timerStart = localStorage.getItem("y2r_compact_timer");
-if(!timerStart || isNaN(Number(timerStart)) || Date.now()-Number(timerStart)>=CYCLE){
-timerStart = String(Date.now());
-localStorage.setItem("y2r_compact_timer", timerStart);
+let timerStart=localStorage.getItem("y2r_compact_timer");
+if(!timerStart||isNaN(Number(timerStart))||Date.now()-Number(timerStart)>=CYCLE){
+timerStart=String(Date.now());localStorage.setItem("y2r_compact_timer",timerStart);
 }
-
 function tick(){
-let elapsed = Date.now() - Number(timerStart);
-if(elapsed >= CYCLE){
-timerStart = String(Date.now());
-localStorage.setItem("y2r_compact_timer", timerStart);
-elapsed = 0;
+let elapsed=Date.now()-Number(timerStart);
+if(elapsed>=CYCLE){timerStart=String(Date.now());localStorage.setItem("y2r_compact_timer",timerStart);elapsed=0;}
+let t=Math.floor((CYCLE-elapsed)/1000);
+document.getElementById("h").textContent=String(Math.floor(t/3600)).padStart(2,"0");
+document.getElementById("m").textContent=String(Math.floor((t%3600)/60)).padStart(2,"0");
+document.getElementById("s").textContent=String(t%60).padStart(2,"0");
 }
-let total = Math.floor((CYCLE-elapsed)/1000);
-let h = Math.floor(total/3600);
-let m = Math.floor((total%3600)/60);
-let s = total%60;
-document.getElementById("h").textContent = String(h).padStart(2,"0");
-document.getElementById("m").textContent = String(m).padStart(2,"0");
-document.getElementById("s").textContent = String(s).padStart(2,"0");
-}
-setInterval(tick,1000);
-tick();
+setInterval(tick,1000);tick();
 
-/* المنتج المختار */
-let selectedProduct = "";
-let selectedPrice = "";
-
-document.querySelectorAll(".order-btn").forEach(function(button){
-button.addEventListener("click", function(){
-selectedProduct = button.dataset.product || "";
-selectedPrice = button.dataset.price || "";
-document.getElementById("selected").textContent =
-selectedProduct + " — " + selectedPrice + " جنيه";
-document.getElementById("order").scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
+let selectedProduct="",selectedPrice="";
+document.querySelectorAll(".order-btn").forEach(function(b){
+b.addEventListener("click",function(){
+selectedProduct=b.dataset.product;selectedPrice=b.dataset.price;
+document.getElementById("selected").textContent=selectedProduct+" — "+selectedPrice+" جنيه";
+document.getElementById("order").scrollIntoView({behavior:"smooth",block:"center"});
 });
 });
 
-/* قراءة UTM */
-function getUtm(){
-const p = new URLSearchParams(window.location.search);
-return {
-utm_source:p.get("utm_source") || "",
-utm_medium:p.get("utm_medium") || "",
-utm_campaign:p.get("utm_campaign") || "",
-utm_content:p.get("utm_content") || ""
-};
+function readQueue(){try{return JSON.parse(localStorage.getItem(QUEUE_KEY)||"[]")}catch(e){return[]}}
+function saveQueue(q){localStorage.setItem(QUEUE_KEY,JSON.stringify(q))}
+function id(){return "Y2R-"+Date.now()+"-"+Math.random().toString(36).slice(2,10).toUpperCase()}
+function utm(){
+const p=new URLSearchParams(location.search);
+return {utm_source:p.get("utm_source")||"",utm_medium:p.get("utm_medium")||"",utm_campaign:p.get("utm_campaign")||"",utm_content:p.get("utm_content")||""};
 }
 
-/* ID فريد لكل طلب */
-function makeOrderId(){
-return "Y2R-" + Date.now() + "-" +
-Math.random().toString(36).slice(2,8).toUpperCase();
-}
+/* إرسال GET مباشر باستخدام HTML form native.
+   لا fetch، لا POST، لا CORS. */
+function nativeSend(order){
+const f=document.createElement("form");
+f.method="GET";
+f.action=GOOGLE_SCRIPT_URL;
+f.target="y2rSubmitFrame";
+f.style.display="none";
 
-/* الطلبات التي لم تُرسل بسبب انقطاع الإنترنت */
-function readQueue(){
-try{
-return JSON.parse(localStorage.getItem(QUEUE_KEY) || "[]");
-}catch(e){
-return [];
-}
-}
-
-function saveQueue(q){
-localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
-}
-
-/* إرسال GET بطريقة HTML native:
-   hidden iframe + hidden form
-   لا يوجد CORS ولا fetch */
-function sendGet(order){
-const senderForm = document.createElement("form");
-senderForm.method = "GET";
-senderForm.action = GOOGLE_SCRIPT_URL;
-senderForm.target = "y2rSender";
-senderForm.style.display = "none";
-
-const data = Object.assign({}, order, {
-_request: Date.now().toString() + Math.random().toString(36).slice(2,7)
+const payload=Object.assign({},order,{_request:id()});
+Object.keys(payload).forEach(function(k){
+const i=document.createElement("input");
+i.type="hidden";i.name=k;i.value=payload[k]==null?"":String(payload[k]);
+f.appendChild(i);
 });
+document.body.appendChild(f);
+f.submit();
 
-Object.keys(data).forEach(function(key){
-const input = document.createElement("input");
-input.type = "hidden";
-input.name = key;
-input.value = data[key] == null ? "" : String(data[key]);
-senderForm.appendChild(input);
-});
+setTimeout(function(){try{f.remove()}catch(e){}},5000);
+}
 
-document.body.appendChild(senderForm);
-senderForm.submit();
-
+/* إعادة إرسال الطلبات المحفوظة واحدًا واحدًا */
+function syncBackup(){
+if(!navigator.onLine)return;
+const q=readQueue();
+if(!q.length)return;
+let item=q[0];
+nativeSend(item);
 setTimeout(function(){
-senderForm.remove();
-}, 3000);
+const now=readQueue();
+if(now.length && now[0].order_id===item.order_id){
+now.shift();saveQueue(now);
+}
+setTimeout(syncBackup,1200);
+},2200);
 }
 
-/* محاولة إرسال الطلبات المعلقة */
-function syncQueue(){
-if(!navigator.onLine) return;
-
-const q = readQueue();
-if(!q.length) return;
-
-/* إرسال طلب واحد كل 1.5 ثانية */
-let index = 0;
-
-function next(){
-const current = readQueue();
-if(index >= current.length) return;
-
-sendGet(current[index]);
-index++;
-
-setTimeout(function(){
-const after = readQueue();
-/* حذف العنصر الذي تم إرساله */
-after.shift();
-saveQueue(after);
-next();
-},1500);
-}
-
-next();
-}
-
-/* إرسال الطلب الجديد */
-document.getElementById("form").addEventListener("submit", function(e){
+document.getElementById("orderForm").addEventListener("submit",function(e){
 e.preventDefault();
 
-const status = document.getElementById("status");
-const button = document.querySelector(".submit");
-
+const status=document.getElementById("status"),btn=document.getElementById("submitBtn");
 if(!selectedProduct){
-status.className = "status err";
-status.textContent = "اختار المنتج الأول.";
-return;
+status.className="status err";status.textContent="اختار المنتج الأول.";return;
 }
 
-const formData = new FormData(e.target);
-const utm = getUtm();
-
-const order = {
-order_id: makeOrderId(),
-timestamp: new Date().toISOString(),
-name: formData.get("name") || "",
-phone: formData.get("phone") || "",
-governorate: formData.get("governorate") || "",
-address: formData.get("address") || "",
-quantity: formData.get("quantity") || "1",
-product: selectedProduct,
-price: selectedPrice,
-page: window.location.href,
-utm_source: utm.utm_source,
-utm_medium: utm.utm_medium,
-utm_campaign: utm.utm_campaign,
-utm_content: utm.utm_content
+const fd=new FormData(e.target),u=utm();
+const order={
+order_id:id(),
+timestamp:new Date().toISOString(),
+name:fd.get("name")||"",
+phone:fd.get("phone")||"",
+governorate:fd.get("governorate")||"",
+address:fd.get("address")||"",
+quantity:fd.get("quantity")||"1",
+product:selectedProduct,
+price:selectedPrice,
+page:location.href,
+utm_source:u.utm_source,utm_medium:u.utm_medium,utm_campaign:u.utm_campaign,utm_content:u.utm_content
 };
 
-button.disabled = true;
-button.textContent = "جاري إرسال الطلب...";
+/* نحفظ نسخة احتياطية قبل الإرسال حتى لا يضيع الطلب */
+const backup=readQueue();
+backup.push(order);saveQueue(backup);
+
+btn.disabled=true;btn.textContent="جاري تسجيل الطلب...";
+status.className="status";status.textContent="";
 
 if(navigator.onLine){
-/* إرسال مباشر */
-sendGet(order);
+nativeSend(order);
 
-/* نعتبره مستلماً بعد إطلاق طلب المتصفح */
+/* حذف أول طلب بعد إعطاء المتصفح وقتًا كافيًا لإطلاق GET */
 setTimeout(function(){
-status.className = "status ok";
-status.textContent =
-"تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
-
-e.target.reset();
-selectedProduct = "";
-selectedPrice = "";
-document.getElementById("selected").textContent =
-"اختار منتج من فوق أولاً";
-
-button.disabled = false;
-button.textContent = "تأكيد الطلب الآن";
-
-/* لو فيه طلبات قديمة نرسلها */
-syncQueue();
-},900);
-
+const q=readQueue();
+if(q.length && q[0].order_id===order.order_id){
+q.shift();saveQueue(q);
+}
+status.className="status ok";
+status.textContent="تم تسجيل طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
+e.target.reset();selectedProduct="";selectedPrice="";
+document.getElementById("selected").textContent="اختار منتج من فوق أولاً";
+btn.disabled=false;btn.textContent="تأكيد الطلب الآن";
+syncBackup();
+},2500);
 }else{
-/* بدون إنترنت: حفظ الطلب */
-const q = readQueue();
-q.push(order);
-saveQueue(q);
-
-status.className = "status ok";
-status.textContent =
-"تم حفظ طلبك على الجهاز 📦 وسيتم إرساله تلقائياً عند عودة الإنترنت.";
-
-e.target.reset();
-selectedProduct = "";
-selectedPrice = "";
-document.getElementById("selected").textContent =
-"اختار منتج من فوق أولاً";
-
-button.disabled = false;
-button.textContent = "تأكيد الطلب الآن";
+status.className="status ok";
+status.textContent="تم حفظ الطلب على الجهاز 📦 وسيتم إرساله تلقائيًا عند عودة الإنترنت.";
+e.target.reset();selectedProduct="";selectedPrice="";
+document.getElementById("selected").textContent="اختار منتج من فوق أولاً";
+btn.disabled=false;btn.textContent="تأكيد الطلب الآن";
 }
 });
 
-/* عند عودة الإنترنت */
-window.addEventListener("online", function(){
-setTimeout(syncQueue,1000);
-});
-
-/* عند فتح الصفحة */
-setTimeout(syncQueue,2000);
+window.addEventListener("online",function(){setTimeout(syncBackup,1000)});
+setTimeout(syncBackup,3000);
 </script>
-
 </body>
 </html>
