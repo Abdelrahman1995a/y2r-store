@@ -75,81 +75,124 @@ footer{text-align:center;background:#02070d;color:#71869a;padding:16px;font-size
 <footer>© 2026 Y2R STORE — More Than a Store… A Smart Choice</footer>
 
 <script>
-/* =========================
-   Y2R STORE - MAIN SCRIPT
-   ========================= */
-
 /* عداد 8 ساعات يتجدد تلقائياً */
-const CYCLE = 8 * 60 * 60 * 1000;
-const KEY = "y2r_compact_timer";
+const CYCLE=8*60*60*1000,KEY="y2r_compact_timer";
+let start=localStorage.getItem(KEY);
+if(!start||Date.now()-Number(start)>=CYCLE){start=String(Date.now());localStorage.setItem(KEY,start);}
+function tick(){let e=Date.now()-Number(start);if(e>=CYCLE){start=String(Date.now());localStorage.setItem(KEY,start);e=0}
+let t=Math.floor((CYCLE-e)/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;
+document.getElementById("h").textContent=String(h).padStart(2,"0");document.getElementById("m").textContent=String(m).padStart(2,"0");document.getElementById("s").textContent=String(s).padStart(2,"0")}
+setInterval(tick,1000);tick();
 
-let start = localStorage.getItem(KEY);
-
-if (!start || Date.now() - Number(start) >= CYCLE) {
-  start = String(Date.now());
-  localStorage.setItem(KEY, start);
-}
-
-function tick() {
-  let elapsed = Date.now() - Number(start);
-
-  if (elapsed >= CYCLE) {
-    start = String(Date.now());
-    localStorage.setItem(KEY, start);
-    elapsed = 0;
-  }
-
-  const totalSeconds = Math.floor((CYCLE - elapsed) / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  document.getElementById("h").textContent = String(hours).padStart(2, "0");
-  document.getElementById("m").textContent = String(minutes).padStart(2, "0");
-  document.getElementById("s").textContent = String(seconds).padStart(2, "0");
-}
-
-tick();
-setInterval(tick, 1000);
-
-
-/* =========================
-   اختيار المنتج
-   ========================= */
-
-let selectedProduct = "";
-let selectedPrice = "";
-
-document.querySelectorAll(".order-btn").forEach(function (button) {
-  button.addEventListener("click", function () {
-    selectedProduct = button.dataset.product || "";
-    selectedPrice = button.dataset.price || "";
-
-    const selectedBox = document.getElementById("selected");
-
-    selectedBox.textContent =
-      selectedProduct + " — " + selectedPrice + " جنيه";
-
-    document.getElementById("order").scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  });
+/* اختيار المنتج */
+let selectedProduct="",selectedPrice="";
+document.querySelectorAll(".order-btn").forEach(b=>b.onclick=()=>{
+ selectedProduct=b.dataset.product;selectedPrice=b.dataset.price;
+ document.getElementById("selected").textContent=selectedProduct+" — "+selectedPrice+" جنيه";
+ document.getElementById("order").scrollIntoView({behavior:"smooth",block:"center"});
 });
 
-
 /* =========================
-   Google Apps Script
+   Google Apps Script + Offline Queue
    ========================= */
 
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbw3QF4UCeam7Brtqa2uxuNrXDmfMK6mdP3dGji55YKVQZ52rNAYtsxSUEDFLzHE7nVt/exec";
 
+const OFFLINE_QUEUE_KEY = "y2r_offline_orders_v1";
+
 const form = document.getElementById("form");
 const statusBox = document.getElementById("status");
 const submitButton = form.querySelector(".submit");
 
-form.addEventListener("submit", function (e) {
+function getOfflineOrders() {
+  try {
+    return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || "[]");
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveOfflineOrders(orders) {
+  localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(orders));
+}
+
+function addOfflineOrder(order) {
+  const orders = getOfflineOrders();
+
+  order.localId =
+    Date.now().toString() + "_" + Math.random().toString(36).slice(2);
+
+  orders.push(order);
+  saveOfflineOrders(orders);
+}
+
+function buildOrderData() {
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  const urlParams = new URLSearchParams(window.location.search);
+
+  data.product = selectedProduct;
+  data.price = selectedPrice;
+  data.page = window.location.href;
+  data.timestamp = new Date().toISOString();
+
+  data.utm_source = urlParams.get("utm_source") || "";
+  data.utm_medium = urlParams.get("utm_medium") || "";
+  data.utm_campaign = urlParams.get("utm_campaign") || "";
+  data.utm_content = urlParams.get("utm_content") || "";
+
+  return data;
+}
+
+async function sendOrderToGoogle(order) {
+  if (!navigator.onLine) {
+    throw new Error("OFFLINE");
+  }
+
+  const params = new URLSearchParams(order);
+  const requestUrl = GOOGLE_SCRIPT_URL + "?" + params.toString();
+
+  /*
+    no-cors يسمح بإرسال الطلب من GitHub Pages إلى Apps Script
+    بدون الحاجة لقراءة محتوى الرد.
+  */
+  const response = await fetch(requestUrl, {
+    method: "GET",
+    mode: "no-cors",
+    cache: "no-store",
+    keepalive: true
+  });
+
+  return response;
+}
+
+async function syncOfflineOrders() {
+  if (!navigator.onLine) return;
+
+  const orders = getOfflineOrders();
+  if (!orders.length) return;
+
+  const remaining = [];
+
+  for (const order of orders) {
+    try {
+      await sendOrderToGoogle(order);
+    } catch (error) {
+      remaining.push(order);
+    }
+  }
+
+  saveOfflineOrders(remaining);
+}
+
+window.addEventListener("online", function() {
+  syncOfflineOrders();
+});
+
+syncOfflineOrders();
+
+form.addEventListener("submit", async function(e) {
   e.preventDefault();
 
   if (!selectedProduct) {
@@ -164,76 +207,43 @@ form.addEventListener("submit", function (e) {
   }
 
   submitButton.disabled = true;
-  submitButton.textContent = "جاري إرسال الطلب...";
+  submitButton.textContent = "جاري حفظ الطلب...";
 
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData.entries());
+  const order = buildOrderData();
 
-  const urlParams = new URLSearchParams(window.location.search);
+  if (!navigator.onLine) {
+    addOfflineOrder(order);
 
-  data.product = selectedProduct;
-  data.price = selectedPrice;
-  data.page = window.location.href;
-  data.timestamp = new Date().toISOString();
+    statusBox.className = "status ok";
+    statusBox.textContent =
+      "تم حفظ طلبك على الجهاز ✅ وسيتم إرساله تلقائيًا عند عودة الإنترنت.";
 
-  data.utm_source = urlParams.get("utm_source") || "";
-  data.utm_medium = urlParams.get("utm_medium") || "";
-  data.utm_campaign = urlParams.get("utm_campaign") || "";
-  data.utm_content = urlParams.get("utm_content") || "";
+    form.reset();
+    submitButton.disabled = false;
+    submitButton.textContent = "تأكيد الطلب الآن";
+    return;
+  }
 
-  /*
-    استخدام GET هنا بدلاً من POST لأن Google Apps Script
-    يستقبل doGet بشكل مباشر من GitHub Pages بدون مشكلة CORS.
-  */
-  const requestParams = new URLSearchParams(data);
-  const requestUrl = GOOGLE_SCRIPT_URL + "?" + requestParams.toString();
-
-  let sent = false;
-
-  function showSuccess() {
-    if (sent) return;
-    sent = true;
+  try {
+    await sendOrderToGoogle(order);
 
     statusBox.className = "status ok";
     statusBox.textContent =
       "تم استلام طلبك بنجاح ✅ سيتم التواصل معك للتأكيد.";
 
     form.reset();
+    syncOfflineOrders();
 
-    submitButton.disabled = false;
-    submitButton.textContent = "تأكيد الطلب الآن";
-  }
+  } catch (error) {
+    addOfflineOrder(order);
 
-  function showError() {
-    if (sent) return;
-    sent = true;
-
-    statusBox.className = "status err";
+    statusBox.className = "status ok";
     statusBox.textContent =
-      "تعذر إرسال الطلب. حاول مرة أخرى.";
-
-    submitButton.disabled = false;
-    submitButton.textContent = "تأكيد الطلب الآن";
+      "تم حفظ طلبك ✅ وسيتم إرساله تلقائيًا عند عودة الإنترنت.";
   }
 
-  /*
-    Image beacon:
-    المتصفح يرسل GET إلى Google Apps Script حتى لو كانت الصفحة
-    لا تستطيع قراءة الرد بسبب سياسة CORS.
-  */
-  const beacon = new Image();
-
-  beacon.onload = showSuccess;
-  beacon.onerror = showSuccess;
-
-  beacon.src = requestUrl;
-
-  /*
-    احتياطي في حالة المتصفح لم يطلق onload/onerror.
-  */
-  setTimeout(function () {
-    if (!sent) showSuccess();
-  }, 1800);
+  submitButton.disabled = false;
+  submitButton.textContent = "تأكيد الطلب الآن";
 });
 </script>
 </body>
